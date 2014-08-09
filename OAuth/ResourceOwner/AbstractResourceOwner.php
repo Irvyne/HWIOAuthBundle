@@ -200,7 +200,9 @@ abstract class AbstractResourceOwner implements ResourceOwnerInterface
     protected function normalizeUrl($url, array $parameters = array())
     {
         $normalizedUrl  = $url;
-        $normalizedUrl .= (false !== strpos($url, '?') ? '&' : '?').http_build_query($parameters, '', '&');
+        if (!empty($parameters)) {
+            $normalizedUrl .= (false !== strpos($url, '?') ? '&' : '?').http_build_query($parameters, '', '&');
+        }
 
         return $normalizedUrl;
     }
@@ -209,7 +211,7 @@ abstract class AbstractResourceOwner implements ResourceOwnerInterface
      * Performs an HTTP request
      *
      * @param string $url     The url to fetch
-     * @param string $content The content of the request
+     * @param string|array $content The content of the request
      * @param array  $headers The headers of the request
      * @param string $method  The HTTP method to use
      *
@@ -224,9 +226,17 @@ abstract class AbstractResourceOwner implements ResourceOwnerInterface
         $request  = new HttpRequest($method, $url);
         $response = new HttpResponse();
 
+        $contentLength = 0;
+        if (is_string($content)) {
+            $contentLength = strlen($content);
+        } elseif (is_array($content)) {
+            $contentLength = strlen(implode('', $content));
+        }
+
         $headers = array_merge(
             array(
                 'User-Agent: HWIOAuthBundle (https://github.com/hwi/HWIOAuthBundle)',
+                'Content-Length: ' . $contentLength,
             ),
             $headers
         );
@@ -307,6 +317,7 @@ abstract class AbstractResourceOwner implements ResourceOwnerInterface
             'scope'               => null,
             'csrf'                => false,
             'user_response_class' => 'HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse',
+            'auth_with_one_url'   => false,
         ));
 
         $resolver->setAllowedValues(array(

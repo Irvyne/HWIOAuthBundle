@@ -11,22 +11,24 @@
 
 namespace HWI\Bundle\OAuthBundle\OAuth\ResourceOwner;
 
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * TwitterResourceOwner
+ * HubicResourceOwner
  *
- * @author Alexander <iam.asm89@gmail.com>
+ * @author Vincent Cassé <vincent@casse.me>
  */
-class TwitterResourceOwner extends GenericOAuth1ResourceOwner
+class HubicResourceOwner extends GenericOAuth2ResourceOwner
 {
     /**
      * {@inheritDoc}
      */
     protected $paths = array(
-        'identifier' => 'id_str',
-        'nickname'   => 'screen_name',
-        'realname'   => 'name',
+        'identifier' => 'email',
+        'nickname'   => 'email',
+        'realname'   => 'firstname',
+        'email'      => 'email',
     );
 
     /**
@@ -37,10 +39,9 @@ class TwitterResourceOwner extends GenericOAuth1ResourceOwner
         parent::configureOptions($resolver);
 
         $resolver->setDefaults(array(
-            'authorization_url' => 'https://api.twitter.com/oauth/authenticate',
-            'request_token_url' => 'https://api.twitter.com/oauth/request_token',
-            'access_token_url'  => 'https://api.twitter.com/oauth/access_token',
-            'infos_url'         => 'https://api.twitter.com/1.1/account/verify_credentials.json',
+            'authorization_url' => 'https://api.hubic.com/oauth/auth/',
+            'access_token_url'  => 'https://api.hubic.com/oauth/token/',
+            'infos_url'         => 'https://api.hubic.com/1.0/account',
         ));
     }
 }

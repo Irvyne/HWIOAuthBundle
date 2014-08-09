@@ -11,22 +11,23 @@
 
 namespace HWI\Bundle\OAuthBundle\OAuth\ResourceOwner;
 
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * TwitterResourceOwner
+ * SoundcloudResourceOwner
  *
- * @author Alexander <iam.asm89@gmail.com>
+ * @author Anthony AHMED <antho.ahmed@gmail.com>
  */
-class TwitterResourceOwner extends GenericOAuth1ResourceOwner
+class SoundcloudResourceOwner extends GenericOAuth2ResourceOwner
 {
-    /**
+	/**
      * {@inheritDoc}
      */
     protected $paths = array(
-        'identifier' => 'id_str',
-        'nickname'   => 'screen_name',
-        'realname'   => 'name',
+    	'identifier' => 'id',
+        'nickname'   => 'username',
+        'realname'   => 'full_name',
     );
 
     /**
@@ -37,10 +38,12 @@ class TwitterResourceOwner extends GenericOAuth1ResourceOwner
         parent::configureOptions($resolver);
 
         $resolver->setDefaults(array(
-            'authorization_url' => 'https://api.twitter.com/oauth/authenticate',
-            'request_token_url' => 'https://api.twitter.com/oauth/request_token',
-            'access_token_url'  => 'https://api.twitter.com/oauth/access_token',
-            'infos_url'         => 'https://api.twitter.com/1.1/account/verify_credentials.json',
+            'access_token_url'         => 'https://api.soundcloud.com/oauth2/token',
+            'authorization_url'        => 'https://soundcloud.com/connect',
+            'infos_url'                => 'https://api.soundcloud.com/me.json',
+
+            'use_bearer_authorization' => true,
+            'scope'                    => 'non-expiring',
         ));
     }
 }
